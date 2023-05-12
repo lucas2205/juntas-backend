@@ -119,13 +119,13 @@ public class JourneyServiceImpl implements JourneyService {
         String url = "https://apis.datos.gob.ar/georef/api/municipios?provincia="
                 + province +"&campos=id,nombre,centroide.lat,centroide.lon&nombre="
                 + city;
-        PlaceApi placeApi= restTemplate.getForObject(url, PlaceApi.class);
+       // PlaceApi placeApi= restTemplate.getForObject(url, PlaceApi.class);
 
         Place place = new Place();
         place.setCity(city);
         place.setProvince(province);
-        place.setLat(placeApi.getLat());
-        place.setLon(placeApi.getLon());
+        //place.setLat(placeApi.getLat());
+       // place.setLon(placeApi.getLon());
 
         return place;
     }
