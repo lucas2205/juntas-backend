@@ -68,7 +68,7 @@ public class JourneyServiceImpl implements JourneyService {
                 .orElseThrow(() -> new ResourceNotFoundException(messenger.getMessage(RESOURCE_NOT_FOUND.name(),
                         new Object[]{User.class.getName()}, Locale.getDefault())));
         Journey journey = new Journey();
-        journey.setCreateDate(request.getCreateDate());
+        journey.setArrivalDate(request.getArrivalDate());
         journey.setDepartureDate(request.getDepartureDate());
         journey.setDriver(driver);
         journey.setComfort(comfort);

@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @Getter
 public class JourneyRequestDto {
 
-    private LocalDate createDate;
     private LocalDate departureDate;
     private LocalDate arrivalDate;
 
