@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "journeys")
@@ -41,4 +42,9 @@ public class Journey implements Serializable {
     private Place arrival;
     @OneToOne
     private Place departure;
+
+    @PrePersist
+    public void prePersist(){
+        this.createDate = LocalDate.now();
+    }
 }
