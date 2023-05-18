@@ -27,9 +27,6 @@ public class JourneyRequestDto {
     private String provinceArr;
 
     //Vehicle
-    private String vehicleColor;
-    private Integer emptySeats;
-    private String primaryBrand;
-    private String modelName;
-    private String patentNumber;
+    private Long vehicleId;
+
 }

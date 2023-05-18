@@ -10,7 +10,12 @@ import com.project.juntas.repository.UserRepository;
 import com.project.juntas.repository.VehicleRepository;
 import com.project.juntas.service.VehicleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
+
+import static com.project.juntas.model.enums.MessageCode.RESOURCE_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +23,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     private final GenericMapper mapper;
     private final VehicleRepository repository;
+    private final MessageSource messenger;
 
 
 
@@ -29,7 +35,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public VehicleResponseDto update(Long id,VehicleRequestDto request) {
-        Vehicle vehicle = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(""));
+        Vehicle vehicle = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(messenger.getMessage(RESOURCE_NOT_FOUND.name(),
+                new Object[]{Vehicle.class.getSimpleName(), request.getPatentNumber()}, Locale.getDefault())));
 
         vehicle.setVehicleColor(request.getVehicleColor());
         vehicle.setEmptySeats(request.getEmptySeats());
@@ -43,13 +50,15 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public VehicleResponseDto getById(Long id){
-        Vehicle vehicle = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(""));
+        Vehicle vehicle = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(messenger.getMessage(RESOURCE_NOT_FOUND.name(),
+                new Object[]{Vehicle.class.getSimpleName(), id}, Locale.getDefault())));
         return mapper.map(vehicle,VehicleResponseDto.class);
     }
 
     @Override
     public void delete(Long id){
-        Vehicle vehicle = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(""));
+        Vehicle vehicle = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(messenger.getMessage(RESOURCE_NOT_FOUND.name(),
+                new Object[]{Vehicle.class.getSimpleName(), id}, Locale.getDefault())));
         repository.delete(vehicle);
     }
 

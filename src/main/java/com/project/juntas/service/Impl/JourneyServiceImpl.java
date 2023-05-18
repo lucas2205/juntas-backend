@@ -35,7 +35,7 @@ public class JourneyServiceImpl implements JourneyService {
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
     private final MessageSource messenger;
-    private final RestTemplate restTemplate;
+
 
 
     @Override
@@ -50,23 +50,23 @@ public class JourneyServiceImpl implements JourneyService {
         comfort.setLuggageSma(request.isLuggageSma());
         comfortRepository.save(comfort);
 
-        Place departure = getDataFromApi(request.getProvinceDep(), request.getCityDep());
+        Place departure = new Place();
+        departure.setProvince(request.getProvinceDep());
+        departure.setCity(request.getCityDep());
         placeRepository.save(departure);
-        Place arrival = getDataFromApi(request.getProvinceArr(), request.getCityArr());
+        Place arrival = new Place();
+        arrival.setProvince(request.getProvinceArr());
+        arrival.setCity(request.getCityArr());
         placeRepository.save(arrival);
 
-        Vehicle vehicle = new Vehicle();
-        vehicle.setVehicleColor(request.getVehicleColor());
-        vehicle.setEmptySeats(request.getEmptySeats());
-        vehicle.setModelName(request.getModelName());
-        vehicle.setPrimaryBrand(request.getPrimaryBrand());
-        vehicle.setPatentNumber(request.getPatentNumber());
-        vehicleRepository.save(vehicle);
+        Vehicle vehicle = vehicleRepository.findById(request.getVehicleId()).orElseThrow(() -> new ResourceNotFoundException(messenger.getMessage(RESOURCE_NOT_FOUND.name(),
+                new Object[]{Vehicle.class.getName(), request.getVehicleId()}, Locale.getDefault())));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User driver = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResourceNotFoundException(messenger.getMessage(RESOURCE_NOT_FOUND.name(),
                         new Object[]{User.class.getName()}, Locale.getDefault())));
+
         Journey journey = new Journey();
         journey.setArrivalDate(request.getArrivalDate());
         journey.setDepartureDate(request.getDepartureDate());
@@ -100,7 +100,8 @@ public class JourneyServiceImpl implements JourneyService {
 
     @Override
     public JourneyResponseDto getById(Long id){
-        Journey journey = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(""));
+        Journey journey = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(messenger.getMessage(RESOURCE_NOT_FOUND.name(),
+                new Object[]{Journey.class.getSimpleName(), id}, Locale.getDefault())));
         return mapper.map(journey,JourneyResponseDto.class);
     }
 
@@ -111,23 +112,9 @@ public class JourneyServiceImpl implements JourneyService {
 
     @Override
     public void delete(Long id){
-        Journey journey = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(""));
+        Journey journey = repository.findById(id).orElseThrow(()->new ResourceNotFoundException(messenger.getMessage(RESOURCE_NOT_FOUND.name(),
+                new Object[]{Journey.class.getSimpleName(), id}, Locale.getDefault())));
         repository.delete(journey);
-    }
-
-    public Place getDataFromApi(String province, String city){
-        String url = "https://apis.datos.gob.ar/georef/api/municipios?provincia="
-                + province +"&campos=id,nombre,centroide.lat,centroide.lon&nombre="
-                + city;
-       // PlaceApi placeApi= restTemplate.getForObject(url, PlaceApi.class);
-
-        Place place = new Place();
-        place.setCity(city);
-        place.setProvince(province);
-        //place.setLat(placeApi.getLat());
-       // place.setLon(placeApi.getLon());
-
-        return place;
     }
 
 }

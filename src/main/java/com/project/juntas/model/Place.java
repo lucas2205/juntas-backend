@@ -21,8 +21,5 @@ public class Place implements Serializable {
 
     private String city;
     private String province;
-    private Double lat;
-    private Double lon;
-
 
 }

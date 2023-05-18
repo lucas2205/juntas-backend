@@ -10,6 +10,5 @@ public class PlaceResponseDto {
     private String city;
     private String province;
     private String country;
-    //private Double lat;
-    //private Double lon;
+
 }
